@@ -77,8 +77,10 @@ class Parser:
         l = self.id()
         if self.accept('OP'):
             r = self.disj()
-            if r is not None:
-                return Node(l, r, ":-")
+            if self.accept('POINT'):
+                if r is not None:
+                    return Node(l, r, ":-")
+            self.log_err(self.current, 'POINT')
             return None
         if self.accept('POINT'):
             return l
