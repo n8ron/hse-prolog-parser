@@ -79,7 +79,11 @@ class Parser:
             r = self.disj()
             if r is not None:
                 return Node(l, r, ":-")
-        return l
+            return None
+        if self.accept('POINT'):
+            return l
+        self.log_err(self.current, 'POINT OR OPERATOR')
+        return None
 
 
 def pr(node):
@@ -105,6 +109,7 @@ def isCorrect():
     expression = []
     if no_errors:
         for token in tokens:
+            expression.append(token)
             if token.type == 'POINT':
                 try:
                     p = Parser(expression)
@@ -115,8 +120,6 @@ def isCorrect():
                     print("Failed to parse")
                     return False
                 expression = []
-            else:
-                expression.append(token)
     if len(expression) > 0:
         print("Expected POINT but got NOTHING at line",
               tokens[-1].lineno, "col", tokens[-1].lexpos + len(tokens[-1].value))
