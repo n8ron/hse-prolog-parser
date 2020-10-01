@@ -106,22 +106,25 @@ def lexer(s):
         yield '\0'
 
 
-def isCorrect():
-    no_errors, tokens = get_tokes(sys.argv[1])
+def isCorrect(string, is_file=True):
+    no_errors, tokens = get_tokes(string, is_file)
+
     expression = []
-    if no_errors:
-        for token in tokens:
-            expression.append(token)
-            if token.type == 'POINT':
-                try:
-                    p = Parser(expression)
-                    tree = p.build()
-                    if tree is not None:
-                        print(pr(tree))
-                except ValueError:
-                    print("Failed to parse")
-                    return False
-                expression = []
+    if not no_errors:
+        print("Failed to parse")
+        return False
+    for token in tokens:
+        expression.append(token)
+        if token.type == 'POINT':
+            try:
+                p = Parser(expression)
+                tree = p.build()
+                if tree is not None:
+                    print(pr(tree))
+            except ValueError:
+                print("Failed to parse")
+                return False
+            expression = []
     if len(expression) > 0:
         print("Expected POINT but got NOTHING at line",
               tokens[-1].lineno, "col", tokens[-1].lexpos + len(tokens[-1].value))
@@ -131,5 +134,5 @@ def isCorrect():
 
 
 if __name__ == "__main__":
-    if isCorrect():
+    if isCorrect(sys.argv[1]):
         print("Correct file")

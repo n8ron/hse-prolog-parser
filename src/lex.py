@@ -10,6 +10,13 @@ class LineCounter:
         self.col = 0
         self.no_error = True
 
+    def reset(self):
+        self.prev_line = 1
+        self.prev_tok = 0
+        self.last_line_tok = 0
+        self.col = 0
+        self.no_error = True
+
     def update_pos(self, token):
         if token.lineno != self.prev_line:
             self.prev_line = token.lineno
@@ -57,7 +64,7 @@ t_ignore = ' \t'
 
 def t_newline(t):
     r"""\n+"""
-    t.lexer.lineno += len(t.value[0])
+    t.lexer.lineno += len(t.value)
     counter.update_pos(t)
 
 
@@ -71,7 +78,23 @@ def t_error(t):
 lexer = lex.lex()
 
 
-def get_tokes(filename):
+def _s_get_tokes(string):
+    str_tokens = []
+    lexer.input(string)
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        counter.update_pos(tok)
+        str_tokens.append(tok)
+    errors = counter.no_error
+    counter.reset()
+    return errors, str_tokens
+
+
+def get_tokes(filename, is_file=True):
+    if not is_file:
+        return _s_get_tokes(filename)
     file_tokens = []
     with open(filename) as f:
         lexer.input(f.read())
@@ -81,7 +104,9 @@ def get_tokes(filename):
                 break
             counter.update_pos(tok)
             file_tokens.append(tok)
-    return counter.no_error, file_tokens
+    errors = counter.no_error
+    counter.reset()
+    return errors, file_tokens
 
 
 if __name__ == "__main__":
