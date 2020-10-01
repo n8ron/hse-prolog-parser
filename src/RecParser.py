@@ -119,6 +119,7 @@ def isCorrect(string, is_file=True):
             try:
                 p = Parser(expression)
                 tree = p.build()
+                # Раскомментируете следуюшие строки, чтобы вывести получившеся выражение
                # if tree is not None:
               #      print(pr(tree))
             except ValueError:
