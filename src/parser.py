@@ -95,8 +95,12 @@ def pr(node):
     if node.name != "seq" and node.name != "ATOM":
         a += " " + node.name
     a += " "
+    if node.name == ".":
+        a += '\n'
     if node.right is not None:
         a += pr(node.right)
+    if node.name == ".":
+        return a
     if node.name != "seq" and node.name != "ATOM":
         return "(" + a + ")"
     if node.name == "ATOM":
