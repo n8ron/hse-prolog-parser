@@ -98,8 +98,6 @@ def pr(node):
     if node.name != "seq" and node.name != "ATOM"\
             and node.name != "atom_in_bracket":
         a += " " + node.name
-    if node.name == "atom_in_bracket":
-        a = "(" + a + ")"
     a += " "
     if node.name == ".":
         a += '\n'
@@ -107,7 +105,8 @@ def pr(node):
         a += pr(node.right)
     if node.name == ".":
         return a
-    if node.name != "seq" and node.name != "ATOM":
+    if node.name != "seq" and node.name != "ATOM"\
+            and node.name != "atom_in_bracket":
         return "(" + a + ")"
     if node.name == "ATOM":
         return "ATOM (" + a + ")"
