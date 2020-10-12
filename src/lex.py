@@ -73,6 +73,7 @@ def t_error(t):
     counter.no_error = False
     print("Illegal character '%s' at line %i at pos %i" % (t.value[0], t.lineno, t.lexpos))
     t.lexer.skip(1)
+    raise ValueError()
 
 
 lexer = lex.lex()

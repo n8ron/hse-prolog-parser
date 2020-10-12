@@ -77,10 +77,13 @@ def p_atom(p):
 
 def p_seq_atom(p):
     """seq_atom : OBR atom CBR
+                | OBR atom CBR seq_atom
                 | ID
                 | ID seq_atom"""
     if len(p) == 4:
         p[0] = p[2]
+    elif len(p) == 5:
+        p[0] = Node(p[2], p[4], "atom_in_bracket")
     elif len(p) == 2:
         p[0] = Node(None, None, "ID " + str(p[1]))
     else:
@@ -92,8 +95,11 @@ def pr(node):
     a = ""
     if node.left is not None:
         a += pr(node.left)
-    if node.name != "seq" and node.name != "ATOM":
+    if node.name != "seq" and node.name != "ATOM"\
+            and node.name != "atom_in_bracket":
         a += " " + node.name
+    if node.name == "atom_in_bracket":
+        a = "(" + a + ")"
     a += " "
     if node.name == ".":
         a += '\n'
